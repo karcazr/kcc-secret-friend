@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   CalendarDays,
-  CircleHelp,
   Gift,
   Home,
   Inbox,
@@ -69,12 +68,7 @@ export function Shell({
       <SkipLink />
       <aside className="sidebar">
         <Brand />
-        <div className="club-label">
-          Korean Culture Club
-          <span>
-            {admin ? "Organizer workspace" : "A little kindness, quietly."}
-          </span>
-        </div>
+        <div className="club-label">Korean Culture Club</div>
         <nav
           aria-label={admin ? "Administration" : "Main navigation"}
           className="side-nav"
@@ -92,13 +86,6 @@ export function Shell({
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="small-note">
-            <CircleHelp size={17} />
-            <p>
-              Small gestures.
-              <br />A closer community.
-            </p>
-          </div>
           {data.is_admin && (
             <Link
               className="workspace-link"
@@ -129,9 +116,7 @@ export function Shell({
       </aside>
       <div className="main-column">
         <header className="topbar">
-          <span>
-            {admin ? "ORGANIZER WORKSPACE" : "YOUR MONTHLY DOSE OF KINDNESS"}
-          </span>
+          <span>{admin ? "ORGANIZER WORKSPACE" : "SECRET FRIEND"}</span>
           <Link
             href={demo ? "/demo?section=profile" : "/app/profile"}
             className="top-profile"
@@ -157,7 +142,7 @@ export function Shell({
         )}
         {demo && (
           <div className="demo-banner">
-            Preview · Fictional data, no connected account.
+            Demo · Sample data
             <Link href="/">
               Sign in <ArrowUpRight size={14} />
             </Link>
@@ -168,7 +153,6 @@ export function Shell({
         </main>
         <footer className="app-footer">
           <span>KCC Secret Friend</span>
-          <span>Kindness makes the connection.</span>
         </footer>
       </div>
       <nav aria-label="Mobile navigation" className="bottom-nav">

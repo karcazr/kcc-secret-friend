@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  ShieldCheck,
-  Users,
-  Shuffle,
-  Flag,
-  CalendarDays,
-} from "lucide-react";
+import { ArrowRight, Users, Shuffle, Flag, CalendarDays } from "lucide-react";
 import { ActionForm } from "./action-form";
 import { DateLabel, Empty, Field, PageHeading, Pager, Status } from "./ui";
 import type { AppData, Person, Event, Report } from "@/lib/types";
@@ -24,24 +17,18 @@ export function AdminView({
     fields = { event: e?.id ?? "" };
   const page = Number(args.page) || 1;
   const title: Record<string, string> = {
-    overview: "A thoughtful round starts here.",
-    participants: "The people behind the kindness.",
-    events: "Make room for a new connection.",
-    assignments: "One circle. Everyone included.",
-    missions: "Give kindness a starting point.",
-    reports: "Keep this a safe place.",
-    announcements: "A word from the organizers.",
+    overview: "Overview",
+    participants: "Participants",
+    events: "Monthly events",
+    assignments: "Assignments",
+    missions: "Missions",
+    reports: "Reports",
+    announcements: "Announcements",
   };
   const base = `/admin/${section}`;
   return (
     <>
-      <PageHeading
-        eyebrow="ORGANIZER WORKSPACE"
-        title={title[section]}
-        description={
-          e ? `Current round: ${e.title}` : "Create a round to get started."
-        }
-      >
+      <PageHeading eyebrow={e?.title ?? ""} title={title[section]}>
         {e && <Status value={e.status} />}
       </PageHeading>
       {section === "overview" && (
@@ -67,9 +54,9 @@ export function AdminView({
               );
             })}
           </div>
-          <div className="dashboard-grid">
+          <div className="narrow">
             <section className="section">
-              <h2>Keep the round moving.</h2>
+              <h2>Manage round</h2>
               {[
                 [
                   "participants",
@@ -89,18 +76,6 @@ export function AdminView({
                 </Link>
               ))}
             </section>
-            <aside className="reveal-teaser">
-              <ShieldCheck size={22} />
-              <h2>Trust is part of the experience.</h2>
-              <p>
-                Assignments are private. Only reported message content appears
-                in your workspace.
-              </p>
-              <p>
-                After a round starts, use safe withdrawal to pause a student’s
-                relationships without reshuffling everyone.
-              </p>
-            </aside>
           </div>
         </>
       )}
@@ -151,7 +126,11 @@ export function AdminView({
                       <h3>{p.display_name}</h3>
                       <p>
                         {p.status} ·{" "}
-                        {p.withdrawn ? "Participation paused" : p.joined ? "Registered this round" : "Not registered"}
+                        {p.withdrawn
+                          ? "Participation paused"
+                          : p.joined
+                            ? "Registered this round"
+                            : "Not registered"}
                         {p.future_opt_out
                           ? " · Opted out of future rounds"
                           : ""}
@@ -177,15 +156,17 @@ export function AdminView({
                               confirm={`Remove ${p.display_name} from the club? Active-round relationships will be paused and kept intact. Future access will be revoked.`}
                             />
                           )}{" "}
-                          {p.joined && !p.withdrawn && e?.status === "active" && (
-                            <ActionForm
-                              action="admin-withdraw"
-                              fields={{ ...fields, user_id: p.id }}
-                              label="Withdraw safely"
-                              secondary
-                              confirm={`Pause ${p.display_name} for this round? Notes to and from them will stop. Existing assignments remain unchanged, and this cannot be undone in the app.`}
-                            />
-                          )}
+                          {p.joined &&
+                            !p.withdrawn &&
+                            e?.status === "active" && (
+                              <ActionForm
+                                action="admin-withdraw"
+                                fields={{ ...fields, user_id: p.id }}
+                                label="Withdraw safely"
+                                secondary
+                                confirm={`Pause ${p.display_name} for this round? Notes to and from them will stop. Existing assignments remain unchanged, and this cannot be undone in the app.`}
+                              />
+                            )}
                         </>
                       )}
                     </div>
@@ -205,10 +186,9 @@ export function AdminView({
             query={args}
           />
           <section className="section narrow">
-            <h2>Invite someone to the club.</h2>
+            <h2>Invite member</h2>
             <p>
-              Create a one-use code tied to their email. Share it with them
-              privately; this app does not send invitations.
+              Share the one-use code privately. No invitation email is sent.
             </p>
             <ActionForm action="admin-invite" label="Create invitation">
               <Field
@@ -300,11 +280,7 @@ export function AdminView({
                 </article>
               );
             })}
-            {!data.items?.length && (
-              <Empty title="A fresh start">
-                <p>Create your first monthly round.</p>
-              </Empty>
-            )}
+            {!data.items?.length && <Empty title="No rounds yet" />}
             <Pager
               page={page}
               hasMore={(data.items?.length ?? 0) > 20}
@@ -312,7 +288,7 @@ export function AdminView({
             />
           </section>
           <aside className="paper">
-            <h2>Start a new round</h2>
+            <h2>New round</h2>
             <p>Finish the current round before opening the next one.</p>
             <ActionForm action="admin-create-event" label="Open registration">
               <Field
@@ -336,18 +312,13 @@ export function AdminView({
             <Shuffle size={25} />
             <h2>
               {e?.status === "active"
-                ? "Everyone has a connection."
-                : "Ready to connect the circle?"}
+                ? "Assignments ready"
+                : "Generate assignments"}
             </h2>
             <p>
               {data.stats?.participants ?? 0} confirmed participants ·{" "}
               {data.stats?.assignments ?? 0} assignments saved ·{" "}
               {data.stats?.withdrawn ?? 0} withdrawn
-            </p>
-            <p>
-              Generation makes one complete circle, with no self-assignments.
-              Previous-round pairs are avoided whenever possible. Two
-              participants must pair with each other.
             </p>
             {e?.status === "closed" ? (
               <ActionForm
@@ -366,18 +337,17 @@ export function AdminView({
               </p>
             )}
           </div>
-          <section className="section">
-            <h2>When someone needs to withdraw</h2>
+          <details className="section">
+            <summary>Withdrawals</summary>
             <p>
-              Use “Withdraw safely” on the Participants page. Their place in the
-              cycle stays intact, and notes to and from them pause. Do not
-              regenerate an active round or promise a replacement pairing.
+              Withdraw a participant to pause their messages without changing
+              assignments.
             </p>
             <Link className="text-link" href="/admin/participants">
               Manage participants
               <ArrowRight size={16} />
             </Link>
-          </section>
+          </details>
         </div>
       )}
       {section === "missions" && (
@@ -414,11 +384,7 @@ export function AdminView({
                 )}
               </article>
             ))}
-            {!data.missions?.length && (
-              <Empty title="Start with something small">
-                <p>Add the first mission for this round.</p>
-              </Empty>
-            )}
+            {!data.missions?.length && <Empty title="No missions yet" />}
             <Pager
               page={page}
               hasMore={(data.missions?.length ?? 0) > 20}
@@ -481,11 +447,7 @@ export function AdminView({
                 </article>
               );
             })}
-            {!data.items?.length && (
-              <Empty title="No reports in this view">
-                <p>Only reported notes are available to organizers.</p>
-              </Empty>
-            )}
+            {!data.items?.length && <Empty title="No reports" />}
             <Pager
               page={page}
               hasMore={(data.items?.length ?? 0) > 20}
@@ -505,11 +467,7 @@ export function AdminView({
                 <DateLabel value={a.created_at} />
               </article>
             ))}
-            {!data.announcements?.length && (
-              <Empty title="Nothing on the noticeboard yet">
-                <p>Publish a note for the current round.</p>
-              </Empty>
-            )}
+            {!data.announcements?.length && <Empty title="No announcements" />}
             <Pager
               page={page}
               hasMore={(data.announcements?.length ?? 0) > 20}
@@ -519,7 +477,7 @@ export function AdminView({
           </section>
           {e && (
             <aside className="paper">
-              <h2>Publish an announcement</h2>
+              <h2>New announcement</h2>
               <ActionForm
                 action="admin-announcement"
                 fields={fields}

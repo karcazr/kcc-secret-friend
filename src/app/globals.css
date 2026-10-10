@@ -426,7 +426,7 @@ input[type="checkbox"] {
 .friend-hero {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 245px;
+  grid-template-columns: 1fr;
   background: #eef1e7;
   border: 1px solid #d9e0d0;
   border-radius: 7px;
@@ -436,21 +436,26 @@ input[type="checkbox"] {
 .hero-copy {
   padding-bottom: 24px;
   z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
 }
 .hero-copy > .eyebrow {
   color: #6e7965;
   font-size: 9px;
 }
 .hero-copy h2 {
-  font-size: 23px;
-  margin-top: 13px;
-  letter-spacing: -0.02em;
+  grid-column: 1 / -1;
+  font: 600 13px var(--sans);
+  margin: 0;
+  letter-spacing: 0;
 }
 .friend-name {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 18px 0 13px;
+  margin: 0;
 }
 .friend-name strong {
   font-family: var(--serif);
@@ -459,12 +464,13 @@ input[type="checkbox"] {
   letter-spacing: -0.04em;
 }
 .hero-copy > p:not(.eyebrow) {
+  grid-column: 1 / -1;
   font-size: 12px;
   line-height: 1.9;
   max-width: 400px;
 }
 .hero-copy .button {
-  margin-top: 20px;
+  margin-top: 0;
   font-size: 11px;
 }
 .hero-foot {
@@ -1341,7 +1347,7 @@ p {
   }
   .friend-hero {
     padding: 25px 24px 0;
-    grid-template-columns: 1fr 190px;
+    grid-template-columns: 1fr;
   }
   .friend-hero .envelope-art {
     transform: scale(0.84);
@@ -1507,7 +1513,10 @@ p {
     padding: 23px 22px 0;
   }
   .hero-copy h2 {
-    font-size: 22px;
+    font-size: 13px;
+  }
+  .hero-copy {
+    grid-template-columns: 1fr;
   }
   .friend-name strong {
     font-size: 32px;

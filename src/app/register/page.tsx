@@ -7,15 +7,8 @@ export default function Register() {
     <div className="auth-page">
       <Brand />
       <div className="paper">
-        <p className="eyebrow">YOU’RE INVITED</p>
-        <h1>
-          A small club.
-          <br />A lot of kindness.
-        </h1>
-        <p>
-          Use the invitation your organizer shared with you. The email must
-          match your invitation.
-        </p>
+        <h1>Register</h1>
+        <p>Use the email linked to your invitation.</p>
         <ActionForm action="register" auth label="Create my account">
           <Field name="display_name" label="Display name" maxLength={60} />
           <Field
@@ -40,17 +33,11 @@ export default function Register() {
               autoComplete="new-password"
             />
           </label>
-          <p className="field-hint">
-            Use at least 12 characters. Choose a password you don’t use
-            elsewhere.
-          </p>
+          <p className="field-hint">At least 12 characters.</p>
         </ActionForm>
-        <p>
-          Your email stays private. You’ll confirm it before your organizer
-          approves your membership.
-        </p>
+        <p>Email confirmation and organizer approval required.</p>
         <Link className="text-link" href="/">
-          Already a member? Sign in
+          Back to sign in
         </Link>
       </div>
     </div>

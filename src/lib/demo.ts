@@ -23,19 +23,19 @@ export function demoData(): AppData {
     missions: [
       {
         id: "m1",
-        title: "Send a little encouragement",
+        title: "Send encouragement",
         description: "A few thoughtful words can turn a day around.",
         completed: true,
       },
       {
         id: "m2",
-        title: "Notice something good",
+        title: "Give a compliment",
         description: "Share a compliment that comes from the heart.",
         completed: false,
       },
       {
         id: "m3",
-        title: "Share a piece of Korean culture",
+        title: "Share a cultural fact",
         description: "A tradition, a new discovery, or a favorite fact.",
         completed: false,
       },
@@ -51,8 +51,8 @@ export function demoData(): AppData {
     announcements: [
       {
         id: "notice1",
-        title: "Kindness, without the shopping list.",
-        body: "This month is about thoughtful words and small acts. No gifts or spending needed.",
+        title: "This month",
+        body: "No gifts needed. A kind note is enough.",
         created_at: now.toISOString(),
       },
     ],

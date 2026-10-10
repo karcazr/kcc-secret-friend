@@ -6,20 +6,11 @@ import {
   Send,
   CalendarDays,
   Mail,
-  Heart,
   ArrowUpRight,
 } from "lucide-react";
 import type { AppData, Event } from "@/lib/types";
 import { ActionForm } from "./action-form";
-import {
-  DateLabel,
-  Empty,
-  Envelope,
-  Field,
-  PageHeading,
-  Pager,
-  Status,
-} from "./ui";
+import { DateLabel, Empty, Field, PageHeading, Pager, Status } from "./ui";
 
 export function StudentView({
   section,
@@ -49,15 +40,8 @@ export function StudentView({
   const join = (
     <section className="join-box">
       <h2>
-        {event?.status === "open"
-          ? "A new connection starts here."
-          : "You’re between rounds."}
+        {event?.status === "open" ? "Registration open" : "No active round"}
       </h2>
-      <p>
-        {event?.status === "open"
-          ? "Join this month’s round to be someone’s quiet supporter."
-          : "Your organizer will share the next round soon."}
-      </p>
       {event?.status === "open" && !data.participation && !demo && (
         <ActionForm action="join" fields={fields} label="Join this round" />
       )}
@@ -69,9 +53,6 @@ export function StudentView({
   const friend = (
     <section className="friend-hero">
       <div className="hero-copy">
-        <p className="eyebrow">
-          <LockKeyhole size={13} /> JUST BETWEEN US
-        </p>
         <h2>Your Secret Friend</h2>
         {data.friend ? (
           <>
@@ -81,19 +62,12 @@ export function StudentView({
               </span>
               <strong>{data.friend.display_name}</strong>
             </div>
-            <p>
-              You’re {data.friend.display_name.split(" ")[0]}’s Secret Friend
-              this month.
-              <br />A small gesture can make their whole day.
-            </p>
             {data.friend.withdrawn || data.participation?.withdrawn ? (
-              <p className="notice">
-                This relationship is paused. Contact your organizer for support.
-              </p>
+              <p className="notice">Paused. Contact your organizer.</p>
             ) : (
               <Link className="button" href={href("send")}>
                 <Send size={16} />
-                Send a little encouragement
+                Send message
                 <ArrowUpRight size={16} />
               </Link>
             )}
@@ -102,8 +76,8 @@ export function StudentView({
           <>
             <p>
               {data.participation
-                ? "You’re on the list. Your connection will appear when the round starts."
-                : "Join a round to meet your Secret Friend."}
+                ? "Registered. Awaiting assignments."
+                : "Join this round to get your match."}
             </p>
             <Link className="button" href={href("join")}>
               View registration
@@ -112,10 +86,9 @@ export function StudentView({
           </>
         )}
       </div>
-      <Envelope />
       <div className="hero-foot">
         <LockKeyhole size={13} />
-        Your identity stays secret until the organizer reveals the round.
+        Anonymous until reveal.
       </div>
     </section>
   );
@@ -133,7 +106,12 @@ export function StudentView({
             </span>
             <div>
               <h3>{m.title}</h3>
-              <p>{m.description}</p>
+              {!compact && m.description && (
+                <details>
+                  <summary>Details</summary>
+                  <p>{m.description}</p>
+                </details>
+              )}
             </div>
             {canAct && !compact && (
               <ActionForm
@@ -151,9 +129,7 @@ export function StudentView({
           </div>
         ))
       ) : (
-        <Empty title="Room for something thoughtful">
-          <p>Your organizer will add missions here.</p>
-        </Empty>
+        <Empty title="No missions yet" />
       )}
     </div>
   );
@@ -163,8 +139,7 @@ export function StudentView({
       <>
         <PageHeading
           eyebrow={event?.title ?? "WELCOME TO THE CLUB"}
-          title={`A little kindness, ${data.profile.display_name.split(" ")[0]}.`}
-          description="One person to cheer on. A whole month to make it count."
+          title={`Hi, ${data.profile.display_name.split(" ")[0]}.`}
         >
           {event && <Status value={event.status} />}
         </PageHeading>
@@ -175,20 +150,17 @@ export function StudentView({
               <div>
                 <section className="section">
                   <div className="section-head">
-                    <h2>This month’s missions</h2>
+                    <h2>Missions</h2>
                     <Link href={href("missions")}>
                       View all
                       <ArrowRight size={15} />
                     </Link>
                   </div>
-                  <p className="section-subtitle">
-                    No grand gestures needed. Start small.
-                  </p>
                   {missionList(true)}
                 </section>
                 <section className="section">
                   <div className="section-head">
-                    <h2>A note for you</h2>
+                    <h2>Inbox</h2>
                     <Link href={href("inbox")}>
                       Open inbox
                       <ArrowRight size={15} />
@@ -206,39 +178,31 @@ export function StudentView({
                       </article>
                     ))
                   ) : (
-                    <Empty title="Good things find their way here">
-                      <p>Your anonymous notes will appear in your inbox.</p>
-                    </Empty>
+                    <Empty title="No messages yet" />
                   )}
                 </section>
               </div>
               <aside>
                 <section className="reveal-teaser">
                   <div className="section-head">
-                    <span className="eyebrow">THE BIG REVEAL</span>
+                    <span className="eyebrow">REVEAL</span>
                     <CalendarDays size={19} />
                   </div>
-                  <h2>
-                    {["completed", "archived"].includes(event.status)
-                      ? "The secret is out."
-                      : "Every secret has its day."}
-                  </h2>
-                  <p>Find out who’s been in your corner.</p>
                   <strong className="reveal-date">
                     <DateLabel value={event.reveal_at} />
                   </strong>
                   <p className="countdown">
                     {event.status === "active"
-                      ? `${Math.max(0, Math.ceil((new Date(event.reveal_at).getTime() - Date.now()) / 86400000))} days to the planned reveal`
-                      : "The organizer controls when identities are revealed."}
+                      ? `${Math.max(0, Math.ceil((new Date(event.reveal_at).getTime() - Date.now()) / 86400000))} days left`
+                      : "Opened by your organizer."}
                   </p>
                   <Link href={href("reveal")}>
-                    Visit the reveal
+                    View reveal
                     <ArrowRight size={16} />
                   </Link>
                 </section>
                 <section className="section">
-                  <p className="eyebrow">CLUB NOTICEBOARD</p>
+                  <p className="eyebrow">ANNOUNCEMENTS</p>
                   {data.announcements?.length ? (
                     data.announcements.slice(0, 3).map((a) => (
                       <article className="announcement" key={a.id}>
@@ -248,15 +212,9 @@ export function StudentView({
                       </article>
                     ))
                   ) : (
-                    <p className="muted">
-                      You’re all caught up. Announcements will appear here.
-                    </p>
+                    <p className="muted">No announcements.</p>
                   )}
                 </section>
-                <p className="gentle-note">
-                  <Heart size={17} />
-                  Thoughtfulness doesn’t have a price tag.
-                </p>
               </aside>
             </div>
           </>
@@ -268,32 +226,8 @@ export function StudentView({
   if (section === "friend")
     return (
       <>
-        <PageHeading
-          eyebrow="YOUR CONNECTION"
-          title="Someone to look out for."
-          description="Keep it simple. Keep it kind. Keep it a secret."
-        />
+        <PageHeading eyebrow={event?.title ?? ""} title="My Secret Friend" />
         {friend}
-        <section className="section">
-          <h2>What makes a good Secret Friend?</h2>
-          <div className="three-up">
-            <div>
-              <span className="eyebrow">01 / NOTICE</span>
-              <h3>The little things matter.</h3>
-              <p>A kind word before a busy week can go a long way.</p>
-            </div>
-            <div>
-              <span className="eyebrow">02 / ENCOURAGE</span>
-              <h3>Make it personal, stay anonymous.</h3>
-              <p>Leave your name and identifying details out of your notes.</p>
-            </div>
-            <div>
-              <span className="eyebrow">03 / RESPECT</span>
-              <h3>Kindness without pressure.</h3>
-              <p>No gifts, money, or personal information required.</p>
-            </div>
-          </div>
-        </section>
       </>
     );
   if (section === "join")
@@ -301,8 +235,7 @@ export function StudentView({
       <>
         <PageHeading
           eyebrow={event?.title ?? "MONTHLY REGISTRATION"}
-          title="Count me in."
-          description="Each round is a fresh chance to brighten someone’s month."
+          title="Join round"
         />
         {event && <Status value={event.status} />}
         <div className="narrow section">
@@ -312,7 +245,7 @@ export function StudentView({
               <p>
                 {data.participation.withdrawn
                   ? "Your participation is paused."
-                  : "Your organizer will let you know when the round starts."}
+                  : "Awaiting the round start."}
               </p>
               {event?.status === "open" && !demo ? (
                 <ActionForm
@@ -323,11 +256,7 @@ export function StudentView({
                   confirm="Leave this round? You can rejoin while registration is open."
                 />
               ) : (
-                <p>
-                  To withdraw after registration closes, contact your club
-                  organizer. They can pause participation without breaking the
-                  round.
-                </p>
+                <p>To withdraw, contact your organizer.</p>
               )}
             </>
           ) : (
@@ -340,21 +269,16 @@ export function StudentView({
     return (
       <>
         <PageHeading
-          eyebrow="A SMALL GESTURE"
-          title="Put a little good into words."
+          eyebrow={event?.title ?? ""}
+          title="New message"
           description={
             data.friend
-              ? `An anonymous note for ${data.friend.display_name}.`
-              : "Your friend will appear when the round begins."
+              ? `To ${data.friend.display_name}`
+              : "Awaiting assignments."
           }
         />
-        <div className="compose-layout">
+        <div className="narrow">
           <div className="paper">
-            <div className="paper-heading">
-              <Mail size={20} />
-              <span>FROM YOUR SECRET FRIEND</span>
-              <LockKeyhole size={16} />
-            </div>
             {canAct && !data.friend?.withdrawn ? (
               <ActionForm
                 action="send"
@@ -369,25 +293,17 @@ export function StudentView({
                     minLength={1}
                     maxLength={2000}
                     rows={8}
-                    placeholder="Something you appreciate. A little encouragement. A reason to smile."
+                    placeholder="Write your message…"
                   />
                 </label>
-                <p className="field-hint">
-                  Up to 2,000 characters. Your name is never attached.
-                </p>
+                <p className="field-hint">Anonymous · 2,000 characters max</p>
               </ActionForm>
             ) : (
-              <Empty
-                title={
-                  demo
-                    ? "You’re viewing a sample round"
-                    : "Messaging is not available right now"
-                }
-              >
+              <Empty title={demo ? "Sample round" : "Messaging unavailable"}>
                 <p>
                   {demo
-                    ? "Sign in to send a note in your real round."
-                    : "Messages open during active rounds. Paused relationships cannot exchange notes."}
+                    ? "Sign in to send messages."
+                    : "Messaging opens when your round is active."}
                 </p>
                 {demo && (
                   <Link className="button" href="/">
@@ -397,28 +313,13 @@ export function StudentView({
               </Empty>
             )}
           </div>
-          <aside className="writing-tips">
-            <p className="eyebrow">A NOTE WORTH RECEIVING</p>
-            <h2>Kind. Simple. You.</h2>
-            <p>“You brought such good energy to our last meeting.”</p>
-            <p>“Good luck this week. You’ve got this.”</p>
-            <hr />
-            <p>
-              Keep personal details private. Never share contact information or
-              pressure someone to reply.
-            </p>
-          </aside>
         </div>
       </>
     );
   if (section === "inbox")
     return (
       <>
-        <PageHeading
-          eyebrow={event?.title ?? "YOUR INBOX"}
-          title="Someone’s in your corner."
-          description="Little notes, from your Secret Friend to you."
-        />
+        <PageHeading eyebrow={event?.title ?? "YOUR INBOX"} title="Inbox" />
         <div className="narrow">
           {data.messages?.length ? (
             data.messages.slice(0, 20).map((m) => (
@@ -431,7 +332,7 @@ export function StudentView({
                 <div className="note-meta">
                   <DateLabel value={m.created_at} time />
                   {m.reported ? (
-                    <span>Reported to an organizer</span>
+                    <span>Reported</span>
                   ) : (
                     !demo && (
                       <details>
@@ -451,8 +352,7 @@ export function StudentView({
                             />
                           </label>
                           <p className="field-hint">
-                            Only this reported message will be shared with
-                            organizers.
+                            This note will be shared with organizers.
                           </p>
                         </ActionForm>
                       </details>
@@ -462,9 +362,7 @@ export function StudentView({
               </article>
             ))
           ) : (
-            <Empty title="Your first note is on its way">
-              <p>Messages from your Secret Friend will appear here.</p>
-            </Empty>
+            <Empty title="No messages yet" />
           )}
           <Pager
             page={page}
@@ -480,8 +378,7 @@ export function StudentView({
       <>
         <PageHeading
           eyebrow={event?.title ?? "MONTHLY MISSIONS"}
-          title="Small acts. Real impact."
-          description="A few ideas to get you started. No competition, no spending."
+          title="Missions"
         />
         <div className="narrow">
           {missionList()}
@@ -499,13 +396,11 @@ export function StudentView({
       <>
         <PageHeading
           eyebrow="THE BIG REVEAL"
-          title={
-            data.sender ? "So, it was you." : "A good secret is worth the wait."
-          }
+          title="Reveal"
           description={
             event
-              ? `Planned reveal: ${new Date(event.reveal_at).toLocaleDateString("en-US", { dateStyle: "long", timeZone: "UTC" })}. Your organizer will open the reveal.`
-              : "Your next round is on its way."
+              ? `Planned reveal: ${new Date(event.reveal_at).toLocaleDateString("en-US", { dateStyle: "long", timeZone: "UTC" })}.`
+              : "No round yet."
           }
         />
         <div className="narrow">
@@ -516,7 +411,6 @@ export function StudentView({
                 {data.sender.display_name.slice(0, 1)}
               </span>
               <h2>{data.sender.display_name}</h2>
-              <p>The person quietly cheering you on this month.</p>
               {data.guess && (
                 <p>
                   {data.sender.correct
@@ -526,7 +420,7 @@ export function StudentView({
                 </p>
               )}
               <Link href={href("inbox")} className="button secondary">
-                Revisit your notes
+                Open inbox
                 <ArrowRight size={16} />
               </Link>
             </section>
@@ -534,11 +428,8 @@ export function StudentView({
             <>
               <section className="reveal-teaser">
                 <LockKeyhole size={25} />
-                <h2>Any guesses?</h2>
-                <p>
-                  You get one guess before the planned reveal time. We’ll keep
-                  your answer safe until the reveal.
-                </p>
+                <h2>Your guess</h2>
+                <p>One guess. Results at reveal.</p>
                 {data.guess ? (
                   <div className="notice success">
                     Your guess: {data.guess}. Locked in.
@@ -550,7 +441,7 @@ export function StudentView({
                     <form method="get" className="search-form">
                       <input type="hidden" name="event" value={event.id} />
                       <label>
-                        Search this round’s participants
+                        Search participants
                         <input
                           name="q"
                           maxLength={100}
@@ -584,11 +475,7 @@ export function StudentView({
                     />
                   </>
                 ) : (
-                  <p>
-                    {demo
-                      ? "Sign in to make your guess in a real round."
-                      : "Guessing is currently closed."}
-                  </p>
+                  <p>{demo ? "Sign in to guess." : "Guessing closed."}</p>
                 )}
               </section>
             </>
@@ -599,11 +486,7 @@ export function StudentView({
   if (section === "history")
     return (
       <>
-        <PageHeading
-          eyebrow="PAST CONNECTIONS"
-          title="A little kindness stays with you."
-          description="Return to your notes, missions, and reveals from earlier rounds."
-        />
+        <PageHeading eyebrow="" title="Past rounds" />
         {data.items?.length ? (
           data.items.slice(0, 20).map((item) => {
             const e = item as Event;
@@ -623,9 +506,7 @@ export function StudentView({
             );
           })
         ) : (
-          <Empty title="Your story starts here">
-            <p>Rounds you join will be saved here.</p>
-          </Empty>
+          <Empty title="No past rounds" />
         )}
         <Pager
           page={page}
@@ -636,25 +517,20 @@ export function StudentView({
     );
   return (
     <>
-      <PageHeading
-        eyebrow="YOUR ACCOUNT"
-        title="Make yourself at home."
-        description="Only the essentials. Your email is never shown to other students."
-      />
+      <PageHeading eyebrow="" title="Settings" />
       <div className="narrow">
         {data.profile.status !== "approved" && (
           <div className="notice">
             {data.profile.status === "pending"
-              ? "Your email is confirmed. An organizer still needs to approve your club membership."
-              : "Your membership is inactive. Contact your organizer for help."}
+              ? "Awaiting organizer approval."
+              : "Membership inactive. Contact your organizer."}
           </div>
         )}
         {demo ? (
           <div className="paper">
             <h2>{data.profile.display_name}</h2>
-            <p>This is a fictional preview account.</p>
             <Link className="button" href="/">
-              Sign in to manage your account
+              Sign in
             </Link>
           </div>
         ) : (
@@ -671,12 +547,9 @@ export function StudentView({
                 name="future_opt_out"
                 defaultChecked={data.profile.future_opt_out}
               />
-              Opt out of joining future rounds
+              Opt out of future rounds
             </label>
-            <p className="field-hint">
-              This does not withdraw you from a round you already joined.
-              Joining each new round is always your choice.
-            </p>
+            <p className="field-hint">Your current round is unchanged.</p>
           </ActionForm>
         )}
         <section className="section">
@@ -692,16 +565,14 @@ export function StudentView({
               </Link>
             )}
           </div>
-          <h2>Your privacy matters.</h2>
-          <p>
-            Your notes are visible to their recipient. Organizers can read only
-            messages that have been reported. Assignments stay secret until the
-            reveal.
-          </p>
-          <p>
-            For account help, withdrawal, or a request to remove your data,
-            contact your club organizer.
-          </p>
+          <details>
+            <summary>Privacy & help</summary>
+            <p>
+              Only recipients can read their notes. Organizers can review
+              reported notes. Contact your organizer for account help or data
+              removal.
+            </p>
+          </details>
         </section>
       </div>
     </>

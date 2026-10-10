@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, LockKeyhole, Heart, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Brand } from "@/components/shell";
 import { ActionForm } from "@/components/action-form";
 import { Envelope, Field } from "@/components/ui";
@@ -19,48 +19,24 @@ export function WelcomeView({
       </header>
       <main className="welcome-main">
         <section className="welcome-story">
-          <p className="eyebrow">ONE CONNECTION. A MONTH OF KINDNESS.</p>
           <h1>
-            Be someone’s
+            Secret
             <br />
-            quiet <em>cheerleader.</em>
+            <em>Friend.</em>
           </h1>
-          <p className="welcome-lede">
-            A thoughtful note. A little encouragement. A friend who’s in your
-            corner, even if you don’t know it yet.
-          </p>
+          <p className="welcome-lede">Your monthly Manitto.</p>
           <Envelope />
-          <div className="welcome-principles">
-            <span>
-              <LockKeyhole size={16} />A shared secret
-            </span>
-            <span>
-              <Heart size={16} />
-              Small gestures
-            </span>
-            <span>
-              <Users size={16} />A closer club
-            </span>
-          </div>
         </section>
         <section className="signin-panel">
-          <p className="eyebrow">WELCOME BACK</p>
-          <h2>
-            Your next connection
-            <br />
-            starts here.
-          </h2>
-          <p>Sign in to your KCC Secret Friend account.</p>
+          <h2>Sign in</h2>
           {!ready && (
             <div className="notice">
-              Setup is in progress. Connect Supabase to enable accounts and real
-              rounds. You can explore the sample round below.
+              Accounts aren’t available yet. Explore the demo below.
             </div>
           )}
           {confirmation === "failed" && (
             <div className="notice error">
-              That confirmation link expired or could not be verified. Try
-              signing in or contact your organizer.
+              Confirmation link expired. Contact your organizer.
             </div>
           )}
           <ActionForm action="signin" auth label="Sign in">
@@ -83,27 +59,21 @@ export function WelcomeView({
             </label>
           </ActionForm>
           <p className="signup-link">
-            New to the club?{" "}
             <Link href="/register">
-              Join with an invitation
+              Have an invitation? Register
               <ArrowRight size={14} />
             </Link>
           </p>
           <div className="signin-footer">
             <Link href="/demo">
-              Take a look around
+              View demo
               <ArrowRight size={15} />
             </Link>
-            <span>A fictional sample round. No account needed.</span>
           </div>
         </section>
       </main>
       <footer className="welcome-footer">
-        <p>
-          Inspired by Manitto (마니또), the Korean tradition of being someone’s
-          secret supporter.
-        </p>
-        <span>Kindness doesn’t have a price tag.</span>
+        <span>Korean Culture Club</span>
       </footer>
     </div>
   );

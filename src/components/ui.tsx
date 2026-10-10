@@ -14,7 +14,7 @@ export function PageHeading({
   return (
     <div className="page-heading">
       <div>
-        <p className="eyebrow">{eyebrow}</p>
+        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h1>{title}</h1>
         {description && <p className="lede">{description}</p>}
       </div>
@@ -45,7 +45,7 @@ export function Status({ value }: { value: string }) {
         {
           open: "Registration open",
           closed: "Registration closed",
-          active: "Round in progress",
+          active: "Active",
           completed: "Revealed",
           archived: "Archived",
         } as Record<string, string>
