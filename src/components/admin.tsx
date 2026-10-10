@@ -151,7 +151,7 @@ export function AdminView({
                       <h3>{p.display_name}</h3>
                       <p>
                         {p.status} ·{" "}
-                        {p.joined ? "Registered this round" : "Not registered"}
+                        {p.withdrawn ? "Participation paused" : p.joined ? "Registered this round" : "Not registered"}
                         {p.future_opt_out
                           ? " · Opted out of future rounds"
                           : ""}
@@ -177,7 +177,7 @@ export function AdminView({
                               confirm={`Remove ${p.display_name} from the club? Active-round relationships will be paused and kept intact. Future access will be revoked.`}
                             />
                           )}{" "}
-                          {p.joined && e?.status === "active" && (
+                          {p.joined && !p.withdrawn && e?.status === "active" && (
                             <ActionForm
                               action="admin-withdraw"
                               fields={{ ...fields, user_id: p.id }}

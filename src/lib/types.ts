@@ -24,6 +24,7 @@ export type Announcement = {
   created_at: string;
 };
 export type Person = {
+  withdrawn: boolean;
   id: string;
   display_name: string;
   status: string;

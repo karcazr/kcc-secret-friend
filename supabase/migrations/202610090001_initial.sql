@@ -242,7 +242,8 @@ begin
       where lower(p.display_name) like q||'%' and (coalesce(p_args->>'status','')='' or m.status=p_args->>'status');
     select coalesce(jsonb_agg(to_jsonb(x)),'[]') into items from (
       select p.id,p.display_name,p.created_at,m.status,p.future_opt_out,
-        exists(select 1 from private.event_participants ep where ep.event_id=e.id and ep.user_id=p.id) as joined
+        exists(select 1 from private.event_participants ep where ep.event_id=e.id and ep.user_id=p.id) as joined,
+        coalesce((select ep.withdrawn from private.event_participants ep where ep.event_id=e.id and ep.user_id=p.id),false) as withdrawn
       from private.profiles p join private.club_memberships m on m.user_id=p.id
       where lower(p.display_name) like q||'%' and (coalesce(p_args->>'status','')='' or m.status=p_args->>'status')
       order by case when p_args->>'sort'='newest' then p.created_at end desc,
