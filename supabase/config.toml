@@ -1,0 +1,4 @@
+project_id = "kcc-secret-friend"
+
+[functions.generate-assignments]
+verify_jwt = true
